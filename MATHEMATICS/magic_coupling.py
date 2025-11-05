@@ -4,7 +4,7 @@ Magic Square Coupling Algorithms
 """
 
 import numpy as np
-from mathematics.magic_square_core import generate_magic_square_3x3, is_magic_square, calculate_imbalance
+from MATHEMATICS.magic_square_core import generate_magic_square_3x3, is_magic_square, calculate_imbalance
 
 class MagicCoupling:
     def __init__(self):
