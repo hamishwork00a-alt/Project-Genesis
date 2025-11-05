@@ -4,7 +4,7 @@
 """
 
 import numpy as np
-from mathematics.magic_square_core import generate_magic_square_3x3
+from MATHEMATICS.magic_square_core import generate_magic_square_3x3
 
 class IntrinsicMagicSquare:
     """粒子的本征幻方类"""
