@@ -3,7 +3,7 @@
 """
 
 import numpy as np
-from mathematics.magic_coupling import MagicCoupling, parity_stability_score
+from MATHEMATICS.magic_coupling import MagicCoupling, parity_stability_score
 
 class ForceCouplingRules:
     """基本力的幻方耦合规则"""
@@ -154,7 +154,7 @@ class UnifiedForceTheory:
 
 # 测试代码
 if __name__ == "__main__":
-    from physics.particles.intrinsic_magic_squares.particle_magic_definitions import get_particle_magic_square
+    from PHYSICS.particles.intrinsic_magic_squares.particle_magic_definitions import get_particle_magic_square
     
     # 创建测试粒子
     electron = get_particle_magic_square('electron')
