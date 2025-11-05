@@ -143,7 +143,7 @@ if __name__ == "__main__":
     square_5x5 = generate_magic_square_3x3()  # 简化，实际应为5x5
     
     print("测试幻方耦合:")
-    result = coupler.couple_squares(square_3x3, square_5x3)
+    result = coupler.couple_squares(square_3x3, square_5x5)
     
     print(f"过渡态阶数: {result['transition_order']}")
     print(f"稳定态阶数: {result['stable_order']}")
