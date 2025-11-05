@@ -58,38 +58,6 @@ class MagicCoupling:
         
         return transition
     
-    def _collapse_to_stable(self, transition_square):
-        """尝试从过渡态坍缩到奇数阶稳定态"""
-        n_transition = transition_square.shape[0]
-        
-        # 目标稳定态是比过渡态小1的奇数阶
-        target_order = n_transition - 1 if (n_transition - 1) % 2 == 1 else n_transition - 2
-        
-        if target_order < 3:  # 最小幻方阶数为3
-            return None
-            
-        # 使用SVD分解找到最稳定的子空间
-        U, s, Vt = np.linalg.svd(transition_square)
-        
-        # 取前target_order个主要成分构建稳定态
-        stable_square = U[:, :target_order] @ np.diag(s[:target_order]) @ Vt[:target_order, :]
-        
-        # 验证是否为有效幻方
-        if self._is_valid_magic_configuration(stable_square):
-            return stable_square
-        return None
-    
-    def _is_valid_magic_configuration(self, square, tolerance=0.1):
-        """检查是否为有效的幻方配置（允许一定误差）"""
-        if square.shape[0] < 3:
-            return False
-            
-        # 计算不平衡度
-        imbalance = calculate_imbalance(square)
-        normalized_imbalance = imbalance / (square.shape[0] * square.shape[0])
-        
-        return normalized_imbalance < tolerance
-    
     # 在 MATHEMATICS/magic_coupling.py 中改进 _collapse_to_stable 方法
 
 def _collapse_to_stable(self, transition_square):
@@ -139,7 +107,8 @@ def _generate_random_magic_square(self, order):
         square = np.random.rand(order, order) * magic_sum / order
         return square
 
-    def _calculate_stability_score(self, transition, """计算过渡态与候选稳定态的匹配度"""
+def _calculate_match_score(self, transition, candidate):
+    """计算过渡态与候选稳定态的匹配度"""
     # 调整候选稳定态的大小以匹配比较
     min_size = min(transition.shape[0], candidate.shape[0])
     trans_sub = transition[:min_size, :min_size]
@@ -148,6 +117,42 @@ def _generate_random_magic_square(self, order):
     # 计算相关系数作为匹配度
     correlation = np.corrcoef(trans_sub.flatten(), cand_sub.flatten())[0, 1]
     return max(0, correlation)  # 确保非负
+    def _collapse_to_stable(self, transition_square):
+        """尝试从过渡态坍缩到奇数阶稳定态"""
+        n_transition = transition_square.shape[0]
+        
+        # 目标稳定态是比过渡态小1的奇数阶
+        target_order = n_transition - 1 if (n_transition - 1) % 2 == 1 else n_transition - 2
+        
+        if target_order < 3:  # 最小幻方阶数为3
+            return None
+            
+        # 使用SVD分解找到最稳定的子空间
+        U, s, Vt = np.linalg.svd(transition_square)
+        
+        # 取前target_order个主要成分构建稳定态
+        stable_square = U[:, :target_order] @ np.diag(s[:target_order]) @ Vt[:target_order, :]
+        
+        # 验证是否为有效幻方
+        if self._is_valid_magic_configuration(stable_square):
+            return stable_square
+        return None
+    
+    def _is_valid_magic_configuration(self, square, tolerance=0.1):
+        """检查是否为有效的幻方配置（允许一定误差）"""
+        if square.shape[0] < 3:
+            return False
+            
+        # 计算不平衡度
+        imbalance = calculate_imbalance(square)
+        normalized_imbalance = imbalance / (square.shape[0] * square.shape[0])
+        
+        return normalized_imbalance < tolerance
+    
+    def _calculate_stability_score(self, transition, stable):
+        """计算耦合的稳定性评分"""
+        if stable is None:
+            return 0.0
             
         # 基于以下因素计算稳定性：
         # 1. 稳定态的幻方"质量"
@@ -197,7 +202,7 @@ if __name__ == "__main__":
     square_5x5 = generate_magic_square_3x3()  # 简化，实际应为5x5
     
     print("测试幻方耦合:")
-    result = coupler.couple_squares(square_3x3, square_5x5)
+    result = coupler.couple_squares(square_3x3, square_5x3)
     
     print(f"过渡态阶数: {result['transition_order']}")
     print(f"稳定态阶数: {result['stable_order']}")
