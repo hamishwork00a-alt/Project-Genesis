@@ -26,17 +26,21 @@ class IntrinsicMagicSquare:
             base_square = np.random.rand(self.magic_order, self.magic_order)
             # 调整使其接近幻方条件
             
+        # 确保使用浮点数类型以避免类型错误
+        base_square = base_square.astype(np.float64)
+        
         # 用量子数"调制"基础幻方
         self.magic_square = self._modulate_with_quantum_numbers(base_square)
     
     def _modulate_with_quantum_numbers(self, base_square):
-        """用量子数调制幻方结构"""
-        modulated = base_square.copy()
+        """用量子数调制幻方结构 - 修复数据类型问题"""
+        # 确保使用浮点数
+        modulated = base_square.astype(np.float64).copy()
         
         # 用电荷调制
         if 'charge' in self.quantum_numbers:
             charge_factor = 1.0 + 0.1 * abs(self.quantum_numbers['charge'])
-            modulated *= charge_factor
+            modulated = modulated * charge_factor  # 使用浮点数乘法
             
         # 用自旋调制
         if 'spin' in self.quantum_numbers:
@@ -111,7 +115,9 @@ if __name__ == "__main__":
     print(f"阶数: {electron.magic_order} (奇数)")
     print(f"稳定性因子: {electron.stability_factor}")
     print("幻方形状:", electron.magic_square.shape)
+    print("数据类型:", electron.magic_square.dtype)
     
     print("\n光子本征幻方:")
     print(f"阶数: {photon.magic_order} (偶数 - 力的载体)")
     print(f"稳定性因子: {photon.stability_factor}")
+    print("数据类型:", photon.magic_square.dtype)
