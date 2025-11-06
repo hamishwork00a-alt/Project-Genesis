@@ -106,3 +106,82 @@ if __name__ == "__main__":
     print(f"{electron.name}: {electron.magic_order}阶幻方, 稳定性: {electron.stability}")
     print(f"{up_quark.name}: {up_quark.magic_order}阶幻方, 电荷: {up_quark.quantum_numbers['charge']}")
     print(f"{photon.name}: {photon.magic_order}阶幻方 (偶数阶力载体)")
+
+# ==================== 扩展粒子定义 ====================
+
+class Neutron:
+    """中子 - 复合粒子"""
+    def __init__(self):
+        self.name = "中子"
+        self.quantum_numbers = {'charge': 0, 'spin': 1/2, 'baryon_number': 1}
+        # 中子由1个上夸克和2个下夸克组成
+        self.up_quark = UpQuark()
+        self.down_quarks = [DownQuark(), DownQuark()]
+        self.magic_square = self._combine_quarks()
+    
+    def _combine_quarks(self):
+        """组合夸克形成中子幻方"""
+        # 使用5阶幻方表示中子
+        return create_approximate_magic_square(5)
+
+class Neutrino(QuantumParticle):
+    """中微子"""
+    def __init__(self):
+        super().__init__(
+            name="中微子",
+            magic_order=3,
+            quantum_numbers={'charge': 0, 'spin': 1/2, 'lepton_number': 1},
+            stability=0.99  # 中微子非常稳定
+        )
+
+class Gluon(QuantumParticle):
+    """胶子 - 强力的载体"""
+    def __init__(self):
+        super().__init__(
+            name="胶子", 
+            magic_order=4,  # 偶数阶力载体
+            quantum_numbers={'charge': 0, 'spin': 1, 'mass': 0},
+            stability=1.0
+        )
+
+class ZBoson(QuantumParticle):
+    """Z玻色子 - 弱力的载体"""
+    def __init__(self):
+        super().__init__(
+            name="Z玻色子",
+            magic_order=4,  # 偶数阶力载体  
+            quantum_numbers={'charge': 0, 'spin': 1, 'mass': 91.2},
+            stability=0.1  # 不稳定，会衰变
+        )
+
+class Deuteron:
+    """氘核 - 最简单的原子核"""
+    def __init__(self):
+        self.name = "氘核"
+        self.proton = Proton()
+        self.neutron = Neutron()
+        self.magic_square = self._combine_nucleons()
+    
+    def _combine_nucleons(self):
+        """结合质子和中子形成氘核"""
+        # 氘核使用7阶幻方
+        return create_approximate_magic_square(7)
+
+# 测试扩展粒子
+def test_extended_particles():
+    """测试新定义的粒子"""
+    print("扩展粒子测试:")
+    
+    neutron = Neutron()
+    neutrino = Neutrino()
+    gluon = Gluon()
+    deuteron = Deuteron()
+    
+    particles = [neutron, neutrino, gluon, deuteron]
+    
+    for particle in particles:
+        stability = parity_stability_score(particle.magic_square)
+        print(f"{particle.name}: {particle.magic_square.shape[0]}阶, 稳定性: {stability:.3f}")
+
+if __name__ == "__main__":
+    test_extended_particles()
